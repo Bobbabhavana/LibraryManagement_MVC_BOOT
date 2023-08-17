@@ -7,6 +7,7 @@
 <title>Login</title>
 </head>
 <body>
+	<h1 style="color: green;">${pos}</h1>
 	<div style="margin-left: 450px; margin-top: 150px">
 		<h1>Login Page</h1>
 		<form action="" method="post">

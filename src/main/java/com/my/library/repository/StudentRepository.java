@@ -6,4 +6,8 @@ import com.my.library.dto.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer> {
 
+    Student findByEmail(String email);
+
+    Student findByMobile(long mobile);
+
 }

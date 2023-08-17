@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +34,8 @@ public class StudentController {
 	}
 	
 	@PostMapping("/signup")
-	public String signup(Student student,@RequestParam String date,@RequestParam MultipartFile pic,) throws IOException
+	public String signup(Student student,@RequestParam String date,@RequestParam MultipartFile pic,ModelMap model) throws IOException
 	{
-		return studentService.signup(student,date,pic);
+		return studentService.signup(student,date,pic,model);
 	}
 }
