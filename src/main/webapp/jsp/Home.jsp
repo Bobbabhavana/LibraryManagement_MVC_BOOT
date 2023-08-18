@@ -12,5 +12,7 @@
 	<a href="/"><button>Home</button></a>
 	<a href="/student/signup"><button>Signup</button></a>
 	<a href="/student/login"><button>Login</button></a>
+	<a href="/librarian"><button>Librarian</button></a>
+	
 </body>
 </html>
