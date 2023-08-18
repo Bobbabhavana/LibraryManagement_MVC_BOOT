@@ -8,6 +8,7 @@
 </head>
 <body>
 	<h1>Library Management System</h1>
+	<h1 style="color: red;">${neg}</h1>
 	<a href="/"><button>Home</button></a>
 	<a href="/student/signup"><button>Signup</button></a>
 	<a href="/student/login"><button>Login</button></a>

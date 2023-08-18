@@ -24,4 +24,8 @@ public class StudentDao {
         return studentRepository.save(student);
     }
 
+    public Student findById(int id) {
+       return studentRepository.findById(id).orElse(null);
+    }
+
 }

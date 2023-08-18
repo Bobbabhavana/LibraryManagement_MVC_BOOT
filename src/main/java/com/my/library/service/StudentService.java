@@ -34,7 +34,9 @@ public class StudentService {
 			pic.getInputStream().read(picture);
 			student.setPicture(picture);
 			student.setPassword(encoder.encode(student.getPassword()));
-			String token = encoder.encode(LocalDate.now() + "");
+			String[] tokenStrings=encoder.encode(LocalDate.now()+"").split("/");
+
+			String token = tokenStrings[tokenStrings.length-1];
 			student.setToken(token);
 
 			studentDao.save(student);
@@ -45,6 +47,24 @@ public class StudentService {
 		} else {
 			model.put("neg", "Email and Mobile Should be Unique");
 			return "Signup";
+		}
+	}
+
+	public String createStudentAccount(int id, String token, ModelMap model) {
+		Student student = studentDao.findById(id);
+		if(student==null)
+		{
+			model.put("neg", "Something went wrong");
+			return "Login";
+		}
+		if (student.getToken().equals(token)) {
+			student.setStatus(true);
+			studentDao.save(student);
+			model.put("pos", "Account verified Success, You can Login now");
+			return "Login";
+		} else {
+			model.put("neg","Invalid link");
+			return "Home";
 		}
 	}
 
