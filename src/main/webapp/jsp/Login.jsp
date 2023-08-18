@@ -11,7 +11,7 @@
 	<h1 style="color: red;">${neg}</h1>
 	<div style="margin-left: 450px; margin-top: 150px">
 		<h1>Login Page</h1>
-		<form action="" method="post">
+		<form action="/student/login" method="post">
 			<fieldset style="width: 100px">
 				<table>
 					<tr>

@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.my.library.dto.Student;
+import com.my.library.helper.LoginHelper;
 import com.my.library.service.StudentService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/student")
@@ -43,5 +46,10 @@ public class StudentController {
 	@GetMapping("/verify/{id}/{token}")
 	public String createStudent(@PathVariable int id, @PathVariable String token,ModelMap model) {
 		return studentService.createStudentAccount(id, token,model);
+	}
+
+	@PostMapping("/login")
+	public String loginStudent(LoginHelper helper,ModelMap model,HttpSession session) {
+		return studentService.login(helper,model,session);
 	}
 }

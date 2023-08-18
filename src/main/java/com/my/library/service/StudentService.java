@@ -11,7 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.my.library.dao.StudentDao;
 import com.my.library.dto.Student;
+import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class StudentService {
@@ -34,9 +37,9 @@ public class StudentService {
 			pic.getInputStream().read(picture);
 			student.setPicture(picture);
 			student.setPassword(encoder.encode(student.getPassword()));
-			String[] tokenStrings=encoder.encode(LocalDate.now()+"").split("/");
+			String[] tokenStrings = encoder.encode(LocalDate.now() + "").split("/");
 
-			String token = tokenStrings[tokenStrings.length-1];
+			String token = tokenStrings[tokenStrings.length - 1];
 			student.setToken(token);
 
 			studentDao.save(student);
@@ -52,8 +55,7 @@ public class StudentService {
 
 	public String createStudentAccount(int id, String token, ModelMap model) {
 		Student student = studentDao.findById(id);
-		if(student==null)
-		{
+		if (student == null) {
 			model.put("neg", "Something went wrong");
 			return "Login";
 		}
@@ -63,8 +65,31 @@ public class StudentService {
 			model.put("pos", "Account verified Success, You can Login now");
 			return "Login";
 		} else {
-			model.put("neg","Invalid link");
+			model.put("neg", "Invalid link");
 			return "Home";
+		}
+	}
+
+	public String login(LoginHelper helper, ModelMap model, HttpSession session) {
+		Student student = studentDao.findByEmail(helper.getEmail());
+		if (student == null) {
+			model.put("neg", "Invalid Email Check and Try Again");
+			return "Login";
+		} else {
+			if (encoder.matches(helper.getPassword(), student.getPassword())) {
+				if (student.isStatus()) {
+					model.put("pos", "Login Success");
+					session.setAttribute("student", student);
+					session.setMaxInactiveInterval(120);
+					return "StudentHome";
+				} else {
+					model.put("neg", "Verify your Email First");
+					return "Login";
+				}
+			} else {
+				model.put("neg", "Invalid Password");
+				return "Login";
+			}
 		}
 	}
 
