@@ -69,4 +69,26 @@ public class LibrarianService {
         }
     }
 
+    public String login(LoginHelper helper, ModelMap model) {
+        Librarian librarian = librarianDao.fetchByEmail(helper.getEmail());
+        if (librarian == null) {
+            model.put("neg", "Invalid Email");
+            return "LibrarianLogin";
+        } else {
+            if (librarian.getPassword().equals(helper.getPassword())) {
+                if (librarian.isStatus()) {
+
+                    model.put("pos", "Login Success");
+                    return "LibrarianHome";
+                } else {
+                    model.put("neg", "OTP Verification Pending");
+                    return "LibrarianLogin";
+                }
+            } else {
+                model.put("neg", "Invalid Password");
+                return "LibrarianLogin";
+            }
+        }
+    }
+
 }

@@ -50,4 +50,9 @@ public class LibrarianController {
 		return librarianService.createLibrarianAccount(id,otp,model);
 	}
 
+    @PostMapping("/login")
+    public String librarianLogin(LoginHelper helper,ModelMap model) {
+		return librarianService.login(helper,model);
+	}
+
 }
