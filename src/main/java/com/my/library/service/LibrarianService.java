@@ -1,6 +1,7 @@
 package com.my.library.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +121,17 @@ public class LibrarianService {
 			bookDao.save(book2);
 			model.put("pos", "Book Added Successfully");
 			return "LibrarianHome";
+		}
+	}
+
+	public String fetchAllBooks(ModelMap model) {
+		List<Book> books = bookDao.findAll();
+		if (books.isEmpty()) {
+			model.put("neg","No Books Found");
+			return "LibrarianHome";
+		} else {
+			model.put("books", books);
+			return "LibrarianBooks";
 		}
 	}
 }

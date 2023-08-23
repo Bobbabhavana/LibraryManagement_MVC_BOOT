@@ -68,9 +68,14 @@ public class LibrarianController {
 	public String addBook() {
 		return "AddBook";
 	}
-	
+
 	@PostMapping("/addbook")
-	public String addBook(Book book,@RequestParam MultipartFile pic,ModelMap model) throws IOException {
-		return librarianService.addBook(book,pic,model);
+	public String addBook(Book book, @RequestParam MultipartFile pic, ModelMap model) throws IOException {
+		return librarianService.addBook(book, pic, model);
+	}
+
+	@GetMapping("/fetchbooks")
+	public String fetchBooks(ModelMap model) {
+		return librarianService.fetchAllBooks(model);
 	}
 }

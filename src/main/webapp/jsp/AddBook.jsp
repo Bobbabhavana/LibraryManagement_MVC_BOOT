@@ -13,7 +13,7 @@
 			type="text" name="author"><br> Price:<input type="text"
 			name="price"><br> 
 			Quantity:<input type="text" name="quantity"><br>
-			Picture:<input type="text" name="pic"><br>
+			Picture:<input type="file" name="pic"><br>
 		<button>Add</button>
 		<button type="reset">Cancel</button>
 	</form>
