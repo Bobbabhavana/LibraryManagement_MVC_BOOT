@@ -78,4 +78,9 @@ public class LibrarianController {
 	public String fetchBooks(ModelMap model) {
 		return librarianService.fetchAllBooks(model);
 	}
+	
+	@PostMapping("/fetchbook")
+	public String fetchBook(@RequestParam String name,ModelMap model) {
+		return librarianService.fetchBooks(name,model);
+	}
 }

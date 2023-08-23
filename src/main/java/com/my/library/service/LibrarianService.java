@@ -134,4 +134,16 @@ public class LibrarianService {
 			return "LibrarianBooks";
 		}
 	}
+
+	public String fetchBooks(String name, ModelMap model) {
+		List<Book> books = bookDao.findByName(name);
+		if(books.isEmpty())
+			books = bookDao.findByAuthor(name);
+		
+		if(books.isEmpty())
+			model.put("neg", "Book Not Found");
+		
+		model.put("books", books);
+		return "LibrarianBooks";
+	}
 }

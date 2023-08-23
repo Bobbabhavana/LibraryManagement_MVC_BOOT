@@ -13,6 +13,13 @@
 	<%
 	List<Book> books = (List<Book>) request.getAttribute("books");
 	%>
+	<h1>${neg}</h1>
+	<form action="/librarian/fetchbook" method="post">
+	<input type="text" name="name">
+	<button>Search</button>
+	</form><br>
+
+    <a href="/librarian/fetchbooks"><button>View All Books</button></a>
 	<table border="1">
 		<tr>
 			<th>Book Id</th>
