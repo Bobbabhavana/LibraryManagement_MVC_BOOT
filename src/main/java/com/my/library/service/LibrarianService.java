@@ -16,6 +16,8 @@ import com.my.library.dto.Librarian;
 import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class LibrarianService {
 
@@ -83,7 +85,7 @@ public class LibrarianService {
 		}
 	}
 
-	public String login(LoginHelper helper, ModelMap model) {
+	public String login(LoginHelper helper, ModelMap model, HttpSession session) {
 		Librarian librarian = librarianDao.fetchByEmail(helper.getEmail());
 		if (librarian == null) {
 			model.put("neg", "Invalid Email");
@@ -91,7 +93,8 @@ public class LibrarianService {
 		} else {
 			if (librarian.getPassword().equals(helper.getPassword())) {
 				if (librarian.isStatus()) {
-
+					session.setMaxInactiveInterval(60);
+					session.setAttribute("librarian", librarian);
 					model.put("pos", "Login Success");
 					return "LibrarianHome";
 				} else {
@@ -105,45 +108,112 @@ public class LibrarianService {
 		}
 	}
 
-	public String addBook(Book book, MultipartFile pic, ModelMap model) throws IOException {
-		byte[] picture = new byte[pic.getInputStream().available()];
-		pic.getInputStream().read(picture);
-		book.setPicture(picture);
+	public String addBook(Book book, MultipartFile pic, ModelMap model, HttpSession session) throws IOException {
+		if (session.getAttribute("librarian") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			byte[] picture = new byte[pic.getInputStream().available()];
+			pic.getInputStream().read(picture);
+			book.setPicture(picture);
 
-		Book book2 = bookDao.findbyNameAndAuthor(book.getName(), book.getAuthor());
-		if (book2 == null) {
-			book.setStatus(true);
+			Book book2 = bookDao.findbyNameAndAuthor(book.getName(), book.getAuthor());
+			if (book2 == null) {
+				book.setStatus(true);
+				bookDao.save(book);
+				model.put("pos", "Book Added Successfully");
+				return "LibrarianHome";
+			} else {
+				book2.setQuantity(book2.getQuantity() + book.getQuantity());
+				bookDao.save(book2);
+				model.put("pos", "Book Added Successfully");
+				return "LibrarianHome";
+			}
+		}
+	}
+
+	public String fetchAllBooks(ModelMap model, HttpSession session) {
+		if (session.getAttribute("librarian") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			List<Book> books = bookDao.findAll();
+			if (books.isEmpty()) {
+				model.put("neg", "No Books Found");
+				return "LibrarianHome";
+			} else {
+				model.put("books", books);
+				return "LibrarianBooks";
+			}
+		}
+	}
+
+	public String fetchBooks(String name, ModelMap model, HttpSession session) {
+		if (session.getAttribute("librarian") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			if (name.equals("")) {
+				return fetchAllBooks(model, session);
+			} else {
+				List<Book> books = bookDao.findByName(name);
+				if (books.isEmpty())
+					books = bookDao.findByAuthor(name);
+
+				if (books.isEmpty())
+					model.put("neg", "Book Not Found");
+
+				model.put("books", books);
+				return "LibrarianBooks";
+			}
+		}
+	}
+
+	public String delete(int id, ModelMap model, HttpSession session) {
+		if (session.getAttribute("librarian") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Book book = bookDao.findById(id);
+			if (book == null) {
+				model.put("neg", "Book Not Found");
+				return fetchAllBooks(model, session);
+			} else {
+				bookDao.deleteBook(id);
+				model.put("pos", "Book Deleted Successfully");
+				return fetchAllBooks(model, session);
+			}
+		}
+
+	}
+
+	public String edit(int id, ModelMap map, HttpSession session) {
+		if (session.getAttribute("librarian") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Book book = bookDao.findById(id);
+			if (book == null) {
+				map.put("neg", "Book Not Found");
+				return fetchAllBooks(map, session);
+			} else {
+				map.put("book", book);
+				return "EditBook";
+			}
+		}
+	}
+
+	public String updateBook(Book book, ModelMap model, HttpSession session) {
+		if (session.getAttribute("librarian") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Book book2 = bookDao.findById(book.getId());
+			book.setPicture(book2.getPicture());
+
 			bookDao.save(book);
-			model.put("pos", "Book Added Successfully");
-			return "LibrarianHome";
-		} else {
-			book2.setQuantity(book2.getQuantity() + book.getQuantity());
-			bookDao.save(book2);
-			model.put("pos", "Book Added Successfully");
+			model.put("pos", "Book Updated Successfully");
 			return "LibrarianHome";
 		}
-	}
-
-	public String fetchAllBooks(ModelMap model) {
-		List<Book> books = bookDao.findAll();
-		if (books.isEmpty()) {
-			model.put("neg","No Books Found");
-			return "LibrarianHome";
-		} else {
-			model.put("books", books);
-			return "LibrarianBooks";
-		}
-	}
-
-	public String fetchBooks(String name, ModelMap model) {
-		List<Book> books = bookDao.findByName(name);
-		if(books.isEmpty())
-			books = bookDao.findByAuthor(name);
-		
-		if(books.isEmpty())
-			model.put("neg", "Book Not Found");
-		
-		model.put("books", books);
-		return "LibrarianBooks";
 	}
 }

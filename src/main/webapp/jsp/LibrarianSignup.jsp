@@ -7,7 +7,8 @@
 <title>Librarian Signup</title>
 </head>
 <body>
-	<h1 style="color: red;">${neg}</h1>
+	<h1 style="color:red">${neg}</h1>
+	<h1 style="color:green">${pos}</h1>
 	<form action="/librarian/signup" method="post"
 		enctype="multipart/form-data">
 		<fieldset style="width: 40vw">

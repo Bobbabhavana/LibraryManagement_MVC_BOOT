@@ -17,6 +17,8 @@ import com.my.library.dto.Librarian;
 import com.my.library.helper.LoginHelper;
 import com.my.library.service.LibrarianService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/librarian")
 public class LibrarianController {
@@ -60,8 +62,8 @@ public class LibrarianController {
 	}
 
 	@PostMapping("/login")
-	public String librarianLogin(LoginHelper helper, ModelMap model) {
-		return librarianService.login(helper, model);
+	public String librarianLogin(LoginHelper helper, ModelMap model, HttpSession session) {
+		return librarianService.login(helper, model, session);
 	}
 
 	@GetMapping("/addbook")
@@ -70,17 +72,33 @@ public class LibrarianController {
 	}
 
 	@PostMapping("/addbook")
-	public String addBook(Book book, @RequestParam MultipartFile pic, ModelMap model) throws IOException {
-		return librarianService.addBook(book, pic, model);
+	public String addBook(Book book, @RequestParam MultipartFile pic, ModelMap model, HttpSession session)
+			throws IOException {
+		return librarianService.addBook(book, pic, model, session);
 	}
 
 	@GetMapping("/fetchbooks")
-	public String fetchBooks(ModelMap model) {
-		return librarianService.fetchAllBooks(model);
+	public String fetchBooks(ModelMap model, HttpSession session) {
+		return librarianService.fetchAllBooks(model, session);
 	}
-	
+
 	@PostMapping("/fetchbook")
-	public String fetchBook(@RequestParam String name,ModelMap model) {
-		return librarianService.fetchBooks(name,model);
+	public String fetchBook(@RequestParam String name, ModelMap model, HttpSession session) {
+		return librarianService.fetchBooks(name, model, session);
+	}
+
+	@GetMapping("/book/delete/{id}")
+	public String deleteBook(@PathVariable int id, ModelMap model, HttpSession session) {
+		return librarianService.delete(id, model, session);
+	}
+
+	@GetMapping("/book/edit/{id}")
+	public String editBook(@PathVariable int id, ModelMap map, HttpSession session) {
+		return librarianService.edit(id, map, session);
+	}
+
+	@PostMapping("/updatebook")
+	public String updateBook(Book book, ModelMap model, HttpSession session) throws IOException {
+		return librarianService.updateBook(book, model, session);
 	}
 }

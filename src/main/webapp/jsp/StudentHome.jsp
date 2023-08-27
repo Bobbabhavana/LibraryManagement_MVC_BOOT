@@ -6,10 +6,11 @@
     <title>Student Home</title>
 </head>
 <body>
-    <h1 style="color: green;">${pos}</h1>
-    <a><button>View Books</button></a>
+    <h1 style="color:red">${neg}</h1>
+	<h1 style="color:green">${pos}</h1>
+    <a href="/student/viewbooks"><button>View Books</button></a>
     <a><button>Pay Fine</button></a>
-    <a><button>Edit Details</button></a>
+    <a href="/student/edit"><button>Edit Details</button></a>
     <a><button>Return Book</button></a>
 </body>
 </html>

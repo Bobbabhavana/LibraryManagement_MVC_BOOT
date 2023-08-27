@@ -2,6 +2,7 @@ package com.my.library.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.my.library.dao.BookDao;
 import com.my.library.dao.StudentDao;
+import com.my.library.dto.Book;
 import com.my.library.dto.Student;
 import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
@@ -24,6 +27,9 @@ public class StudentService {
 
 	@Autowired
 	StudentDao studentDao;
+
+	@Autowired
+	BookDao bookDao;
 
 	@Autowired
 	SendMailLogic mailLogic;
@@ -45,7 +51,7 @@ public class StudentService {
 			studentDao.save(student);
 			mailLogic.studentSignup(student);
 
-			model.put("pos", "Verification link sent success CLick link to verify");
+			model.put("pos", "Verification link sent success Click link to verify");
 			return "Login";
 		} else {
 			model.put("neg", "Email and Mobile Should be Unique");
@@ -90,6 +96,71 @@ public class StudentService {
 				model.put("neg", "Invalid Password");
 				return "Login";
 			}
+		}
+	}
+
+	public String fetchBooks(HttpSession session, ModelMap model) {
+		if (session.getAttribute("student") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			List<Book> books = bookDao.findAll();
+			if (books.isEmpty()) {
+				model.put("neg", "No Books Found");
+				return "StudentHome";
+			} else {
+				model.put("books", books);
+				return "StudentBooks";
+			}
+		}
+	}
+
+	public String fetchBooks(String name, ModelMap model, HttpSession session) {
+		if (session.getAttribute("student") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			if (name.equals("")) {
+				return fetchBooks(session, model);
+			} else {
+				List<Book> books = bookDao.findByName(name);
+				if (books.isEmpty())
+					books = bookDao.findByAuthor(name);
+
+				if (books.isEmpty())
+					model.put("neg", "Book Not Found");
+
+				model.put("books", books);
+				return "StudentBooks";
+			}
+		}
+	}
+
+	public String edit(HttpSession session, ModelMap model) {
+		if (session.getAttribute("student") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student = (Student) session.getAttribute("student");
+			model.put("student", student);
+			return "EditStudent";
+		}
+	}
+
+	public String update(Student student, String date, ModelMap model, HttpSession session) {
+		if (session.getAttribute("student") == null) {
+			model.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student2 = (Student) session.getAttribute("student");
+			student.setDob(LocalDate.parse(date));
+			student.setPassword(encoder.encode(student.getPassword()));
+			student.setPicture(student2.getPicture());
+			student.setStatus(true);
+			student.setToken(student2.getToken());
+			studentDao.save(student);
+			model.put("pos", "Updated Successfully");
+			return "StudentHome";
 		}
 	}
 

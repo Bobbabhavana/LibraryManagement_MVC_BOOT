@@ -21,35 +21,53 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/student")
 public class StudentController {
-	
+
 	@Autowired
 	StudentService studentService;
 
 	@GetMapping("/signup")
-	public String gotoSignup()
-	{
+	public String gotoSignup() {
 		return "Signup";
 	}
-	
+
 	@GetMapping("/login")
-	public String gotoLogin()
-	{
+	public String gotoLogin() {
 		return "Login";
 	}
-	
+
 	@PostMapping("/signup")
-	public String signup(Student student,@RequestParam String date,@RequestParam MultipartFile pic,ModelMap model) throws IOException
-	{
-		return studentService.signup(student,date,pic,model);
+	public String signup(Student student, @RequestParam String date, @RequestParam MultipartFile pic, ModelMap model)
+			throws IOException {
+		return studentService.signup(student, date, pic, model);
 	}
 
 	@GetMapping("/verify/{id}/{token}")
-	public String createStudent(@PathVariable int id, @PathVariable String token,ModelMap model) {
-		return studentService.createStudentAccount(id, token,model);
+	public String createStudent(@PathVariable int id, @PathVariable String token, ModelMap model) {
+		return studentService.createStudentAccount(id, token, model);
 	}
 
 	@PostMapping("/login")
-	public String loginStudent(LoginHelper helper,ModelMap model,HttpSession session) {
-		return studentService.login(helper,model,session);
+	public String loginStudent(LoginHelper helper, ModelMap model, HttpSession session) {
+		return studentService.login(helper, model, session);
+	}
+
+	@GetMapping("/viewbooks")
+	public String viewBooks(HttpSession session, ModelMap map) {
+		return studentService.fetchBooks(session, map);
+	}
+
+	@PostMapping("/fetchbook")
+	public String fetchBook(@RequestParam String name, ModelMap model, HttpSession session) {
+		return studentService.fetchBooks(name, model, session);
+	}
+
+	@GetMapping("/edit")
+	public String edit(HttpSession session, ModelMap map) {
+		return studentService.edit(session, map);
+	}
+
+	@PostMapping("/update")
+	public String update(Student student, @RequestParam String date,ModelMap model,HttpSession session) {
+		return studentService.update(student, date, model,session);
 	}
 }

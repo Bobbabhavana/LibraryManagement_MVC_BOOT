@@ -4,40 +4,40 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Signup</title>
+<title>Edit Student Details</title>
 </head>
 <body>
-	<h1 style="color:red">${neg}</h1>
-	<h1 style="color:green">${pos}</h1>
-	<form action="/student/signup" method="post"
-		enctype="multipart/form-data">
+	<h1 style="color: red">${neg}</h1>
+	<h1 style="color: green">${pos}</h1>
+	<form action="/student/update" method="post">
 		<fieldset style="width: 40vw">
-			<legend>Student Signup</legend>
+			<legend>Student Update</legend>
+			<input type="text" name="id" value="${student.getId()}" hidden="">
 			<table>
 
 				<tr>
 					<th>Name:</th>
-					<th><input type="text" name="name"></th>
+					<th><input type="text" name="name" value="${student.getName()}"></th>
 				</tr>
 
 				<tr>
 					<th>Email:</th>
-					<th><input type="email" name="email"></th>
+					<th><input type="email" name="email" value="${student.getEmail()}" readonly="readonly"></th>
 				</tr>
 
 				<tr>
 					<th>Mobile:</th>
-					<th><input type="number" name="mobile"></th>
+					<th><input type="number" name="mobile" value="${student.getMobile()}"></th>
 				</tr>
 
 				<tr>
 					<th>Password:</th>
-					<th><input type="password" name="password"></th>
+					<th><input type="password" name="password" required="required"></th>
 				</tr>
 
 				<tr>
 					<th><label>DOB: </label></th>
-					<th><input type="date" name="date"></th>
+					<th><input type="date" name="date" value="${student.getDob()}"></th>
 				</tr>
 
 				<tr>
@@ -48,12 +48,7 @@
 				</tr>
 
 				<tr>
-					<th><label>Picture:</label></th>
-					<th><input type="file" name="pic"></th>
-				</tr>
-
-				<tr>
-					<th><button>Signup</button></th>
+					<th><button>Update</button></th>
 					<th><button type="reset">Cancel</button></th>
 				</tr>
 
@@ -61,8 +56,5 @@
 			<br> <a href="/"><button type="button">Back</button></a>
 		</fieldset>
 	</form>
-
-
-
 </body>
 </html>
