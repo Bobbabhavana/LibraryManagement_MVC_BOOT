@@ -75,4 +75,9 @@ public class StudentController {
 	public String borrow(@PathVariable int id, HttpSession session, ModelMap map) {
 		return studentService.borrow(id, session, map);
 	}
+
+	@GetMapping("/history")
+	public String viewHistory(HttpSession session, ModelMap map) {
+		return studentService.viewBorrowHistory(session, map);
+	}
 }

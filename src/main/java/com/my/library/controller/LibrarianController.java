@@ -101,4 +101,8 @@ public class LibrarianController {
 	public String updateBook(Book book, ModelMap model, HttpSession session) throws IOException {
 		return librarianService.updateBook(book, model, session);
 	}
+	@GetMapping("/history")
+	public String viewHistory(HttpSession session, ModelMap map) {
+		return librarianService.viewBorrowHistory(session, map);
+	}
 }

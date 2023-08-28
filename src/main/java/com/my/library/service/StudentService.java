@@ -245,4 +245,23 @@ public class StudentService {
 		}
 	}
 
+	public String viewBorrowHistory(HttpSession session, ModelMap map) {
+		if (session.getAttribute("student") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student = (Student) session.getAttribute("student");
+			List<BookRecord> list = student.getRecords();
+			if(list.isEmpty())
+			{
+				map.put("neg", "No Records Found");
+				return "StudentHome";
+			}
+			else {
+			map.put("list", list);
+			return "StudentHistory";
+			}
+		}
+	}
+
 }
