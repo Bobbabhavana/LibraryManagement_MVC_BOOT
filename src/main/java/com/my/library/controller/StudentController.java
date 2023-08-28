@@ -67,7 +67,12 @@ public class StudentController {
 	}
 
 	@PostMapping("/update")
-	public String update(Student student, @RequestParam String date,ModelMap model,HttpSession session) {
-		return studentService.update(student, date, model,session);
+	public String update(Student student, @RequestParam String date, ModelMap model, HttpSession session) {
+		return studentService.update(student, date, model, session);
+	}
+
+	@GetMapping("/borrow/{id}")
+	public String borrow(@PathVariable int id, HttpSession session, ModelMap map) {
+		return studentService.borrow(id, session, map);
 	}
 }

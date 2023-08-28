@@ -2,6 +2,7 @@ package com.my.library.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.my.library.dao.BookDao;
+import com.my.library.dao.BookRecordDao;
 import com.my.library.dao.StudentDao;
 import com.my.library.dto.Book;
+import com.my.library.dto.BookRecord;
 import com.my.library.dto.Student;
 import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
@@ -30,6 +33,9 @@ public class StudentService {
 
 	@Autowired
 	BookDao bookDao;
+
+	@Autowired
+	BookRecordDao bookRecordDao;
 
 	@Autowired
 	SendMailLogic mailLogic;
@@ -161,6 +167,81 @@ public class StudentService {
 			studentDao.save(student);
 			model.put("pos", "Updated Successfully");
 			return "StudentHome";
+		}
+	}
+
+	public String borrow(int id, HttpSession session, ModelMap map) {
+		if (session.getAttribute("student") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student = (Student) session.getAttribute("student");
+			Book book = bookDao.findById(id);
+
+			boolean flag = true;
+			// Logic to check if book is already borrowed by the student
+			List<BookRecord> bookRecords = student.getRecords();
+			if (bookRecords != null && !bookRecords.isEmpty()) {
+				for (BookRecord bookRecord : bookRecords) {
+					if (bookRecord.getBook().getId() == id && bookRecord.getReturnDate() == null) {
+						flag = false;
+						break;
+					}
+				}
+			}
+			// Logic for Checking previous Fine Payment Done
+			double fine = 0;
+			if (bookRecords != null && !bookRecords.isEmpty()) {
+				for (BookRecord bookRecord : bookRecords) {
+					fine = fine + bookRecord.getFine();
+				}
+			}
+
+			if (fine > 0) {
+				map.put("neg", "Fine Payment Pending Can not borrow New Book");
+				return "StudentHome";
+			} else {
+				if (book.isStatus() && flag) {
+					book.setQuantity(book.getQuantity() - 1);
+					if (book.getQuantity() < 1)
+						book.setStatus(false);
+					// Mapping student and book with record
+					BookRecord record = new BookRecord();
+					record.setBook(book);
+					record.setStudent(student);
+					record.setIssueDate(LocalDate.now());
+
+					bookRecordDao.saveRecord(record);
+
+					// Mapping Record with book
+					List<BookRecord> bookRecords1 = book.getRecords();
+
+					if (bookRecords1 == null)
+						bookRecords1 = new ArrayList<>();
+
+					bookRecords1.add(record);
+					book.setRecords(bookRecords1);
+
+					bookDao.save(book);
+
+					// Mapping Record with Student
+					List<BookRecord> bookRecords2 = student.getRecords();
+					if (bookRecords2 == null)
+						bookRecords2 = new ArrayList<>();
+
+					bookRecords2.add(record);
+					student.setRecords(bookRecords2);
+
+					studentDao.save(student);
+
+					map.put("pos", "Book Borrowing Success");
+					return "StudentHome";
+				} else {
+					map.put("neg", "Book is Not Available or Already borrowed");
+					return "StudentHome";
+				}
+			}
+
 		}
 	}
 

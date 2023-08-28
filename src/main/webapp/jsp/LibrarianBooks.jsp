@@ -52,6 +52,7 @@
 		<%
 		}
 		%>
-	</table>
+	</table><br>
+	<a href="/jsp/LibrarianHome.jsp"><button>Back</button></a>
 </body>
 </html>

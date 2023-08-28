@@ -43,11 +43,13 @@
 			<th><%=book.getAuthor()%></th>
 			<th><%=book.getPrice()%></th>
 			<th><%=book.getQuantity()%></th>
-			<th><a href="/student/borrow/${book.getId()}"><button>Borrow</button></a></th>
+			<th><a href="/student/borrow/<%=book.getId()%>"><button>Borrow</button></a></th>
 		</tr>
 		<%
 		}
 		%>
 	</table>
+	<br>
+	<a href="/jsp/StudentHome.jsp"><button>Back</button></a>
 </body>
 </html>
