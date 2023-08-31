@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.my.library.dto.Student;
 import com.my.library.helper.LoginHelper;
 import com.my.library.service.StudentService;
+import com.razorpay.RazorpayException;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -87,7 +88,12 @@ public class StudentController {
 	}
 
 	@GetMapping("/payfine")
-	public String payFine(HttpSession session, ModelMap map) {
+	public String payFine(HttpSession session, ModelMap map) throws RazorpayException {
 		return studentService.payFine(session, map);
+	}
+
+	@PostMapping("/paymentSuccess")
+	public String paymentComplete(@RequestParam String razorpay_payment_id, HttpSession session, ModelMap map) {
+		return studentService.paymentComplete(razorpay_payment_id,session,map);
 	}
 }

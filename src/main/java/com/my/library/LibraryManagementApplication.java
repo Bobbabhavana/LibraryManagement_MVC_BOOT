@@ -13,8 +13,8 @@ public class LibraryManagementApplication {
 		SpringApplication.run(LibraryManagementApplication.class, args);
 	}
 
-    @Bean
-    BCryptPasswordEncoder encoder() {
+	@Bean
+	BCryptPasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
 	}
 }

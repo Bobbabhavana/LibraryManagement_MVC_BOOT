@@ -6,6 +6,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,14 @@ import com.my.library.dao.BookRecordDao;
 import com.my.library.dao.StudentDao;
 import com.my.library.dto.Book;
 import com.my.library.dto.BookRecord;
+import com.my.library.dto.PayMentDetails;
 import com.my.library.dto.Student;
 import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
+import com.my.library.repository.PaymentRepository;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,6 +46,9 @@ public class StudentService {
 
 	@Autowired
 	SendMailLogic mailLogic;
+
+	@Autowired
+	PaymentRepository paymentRepository;
 
 	public String signup(Student student, String date, MultipartFile pic, ModelMap model) throws IOException {
 		if (studentDao.findByEmail(student.getEmail()) == null
@@ -293,7 +302,7 @@ public class StudentService {
 		}
 	}
 
-	public String payFine(HttpSession session, ModelMap map) {
+	public String payFine(HttpSession session, ModelMap map) throws RazorpayException {
 		if (session.getAttribute("student") == null) {
 			map.put("neg", "Invalid Session");
 			return "Home";
@@ -311,10 +320,34 @@ public class StudentService {
 				return "StudentHome";
 			} else {
 				// Payment Logic
-				map.put("pos", "You have to Pay " + fine + " Rs. Fine ");
-				return "StudentHome";
+
+				JSONObject object = new JSONObject();
+				object.put("amount", (int) (fine * 100));
+				object.put("currency", "INR");
+
+				RazorpayClient client = new RazorpayClient("rzp_test_f4vcAPoh0RDZfi", "jjblWSJ6F7NJuPUOtNmDjg4i1");
+				Order order = client.orders.create(object);
+
+				PayMentDetails details = new PayMentDetails();
+				details.setAmount(order.get("amount").toString());
+				details.setCurrency(order.get("currency").toString());
+				details.setPaymentId(null);
+				details.setOrderId(order.get("id").toString());
+				details.setStatus(order.get("status"));
+				details.setKeyDetails("rzp_test_f4vcAPoh0RDZfi");
+
+				paymentRepository.save(details);
+
+				map.put("details", details);
+				map.put("student", student);
+
+				return "RazorPayHome";
 			}
 		}
+	}
+
+	public String paymentComplete(String razorpay_payment_id, HttpSession session, ModelMap map) {
+		
 	}
 
 }
