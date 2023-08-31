@@ -325,7 +325,7 @@ public class StudentService {
 				object.put("amount", (int) (fine * 100));
 				object.put("currency", "INR");
 
-				RazorpayClient client = new RazorpayClient("rzp_test_f4vcAPoh0RDZfi", "jjblWSJ6F7NJuPUOtNmDjg4i1");
+				RazorpayClient client = new RazorpayClient("key", "secret");
 				Order order = client.orders.create(object);
 
 				PayMentDetails details = new PayMentDetails();
@@ -334,7 +334,7 @@ public class StudentService {
 				details.setPaymentId(null);
 				details.setOrderId(order.get("id").toString());
 				details.setStatus(order.get("status"));
-				details.setKeyDetails("rzp_test_f4vcAPoh0RDZfi");
+				details.setKeyDetails("key");
 
 				paymentRepository.save(details);
 
@@ -347,7 +347,33 @@ public class StudentService {
 	}
 
 	public String paymentComplete(String razorpay_payment_id, HttpSession session, ModelMap map) {
-		
+		if (session.getAttribute("student") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+
+			Student student = (Student) session.getAttribute("student");
+			List<PayMentDetails> details = paymentRepository.findAll();
+			PayMentDetails payMentDetails = details.stream().filter(x -> x.getPaymentId() == null).findFirst()
+					.orElse(null);
+			payMentDetails.setPaymentId(razorpay_payment_id);
+			paymentRepository.save(payMentDetails);
+
+			BookRecord bookRecord = null;
+			List<BookRecord> bookRecords = student.getRecords();
+			if (bookRecords != null && !bookRecords.isEmpty()) {
+				for (BookRecord bookRecord1 : bookRecords) {
+					if (bookRecord1.getFine() > 0) {
+						bookRecord = bookRecord1;
+					}
+				}
+			}
+
+			bookRecord.setFine(0);
+			bookRecordDao.saveRecord(bookRecord);
+			map.put("pos", "Payment Success and Fine Cleared");
+			return "StudentHome";
+		}
 	}
 
 }
