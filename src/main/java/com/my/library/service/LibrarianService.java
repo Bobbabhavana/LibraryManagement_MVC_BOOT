@@ -14,7 +14,6 @@ import com.my.library.dao.LibrarianDao;
 import com.my.library.dto.Book;
 import com.my.library.dto.BookRecord;
 import com.my.library.dto.Librarian;
-import com.my.library.dto.Student;
 import com.my.library.helper.LoginHelper;
 import com.my.library.helper.SendMailLogic;
 
@@ -224,17 +223,34 @@ public class LibrarianService {
 			map.put("neg", "Invalid Session");
 			return "Home";
 		} else {
-			List<Book> list=bookDao.findAll();
-			
-			if(list.isEmpty())
-			{
-				map.put("neg", "No Records Found");
-				return "StudentHome";
+			return "BookId";
+		}
+	}
+
+	public String viewBorrowHistory(HttpSession session, ModelMap map, int id) {
+		if (session.getAttribute("librarian") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Book book = bookDao.findById(id);
+			if (book == null) {
+				map.put("neg", "Book Not Found");
+				return "LibrarianHome";
 			}
 			else {
-			map.put("list", list);
-			return "StudentHistory";
+				List<BookRecord> records=book.getRecords();
+				if(records.isEmpty())
+				{
+					map.put("neg", "No History Found");
+					return "LibrarianHome";
+				}
+				else {
+					map.put("records", records);
+					return "BookHistory";
+				}
 			}
 		}
 	}
+	
+	
 }

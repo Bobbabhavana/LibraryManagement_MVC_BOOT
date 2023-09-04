@@ -12,6 +12,7 @@
     <a><button>Pay Fine</button></a>
     <a href="/student/edit"><button>Edit Details</button></a>
     <a href="/student/history"><button>View Borrowed History</button></a>
-    <a><button>Return Book</button></a>
+    <a href="/student/return"><button>Return Book</button></a>
+    <a href="/logout"><button>Logout</button></a>
 </body>
 </html>

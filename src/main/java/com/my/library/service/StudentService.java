@@ -2,6 +2,7 @@ package com.my.library.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,7 +184,7 @@ public class StudentService {
 			List<BookRecord> bookRecords = student.getRecords();
 			if (bookRecords != null && !bookRecords.isEmpty()) {
 				for (BookRecord bookRecord : bookRecords) {
-					if (bookRecord.getBook().getId() == id && bookRecord.getReturnDate() == null) {
+					if (bookRecord.getReturnDate() == null) {
 						flag = false;
 						break;
 					}
@@ -252,14 +253,42 @@ public class StudentService {
 		} else {
 			Student student = (Student) session.getAttribute("student");
 			List<BookRecord> list = student.getRecords();
-			if(list.isEmpty())
-			{
+			if (list.isEmpty()) {
 				map.put("neg", "No Records Found");
 				return "StudentHome";
+			} else {
+				map.put("list", list);
+				return "StudentHistory";
 			}
-			else {
-			map.put("list", list);
-			return "StudentHistory";
+		}
+	}
+
+	public String returnBook(HttpSession session, ModelMap map) {
+		if (session.getAttribute("student") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student = (Student) session.getAttribute("student");
+			List<BookRecord> list = student.getRecords();
+			List<BookRecord> records = list.stream().filter(record -> record.getReturnDate() == null).toList();
+			if (records.isEmpty()) {
+				map.put("neg", "Not Borrowed Any Book to Return");
+				return "StudentHome";
+			} else {
+				BookRecord record = records.get(0);
+				record.setReturnDate(LocalDate.now());
+				//Fine Calculation
+				double fine = 0;
+				int days = Period.between(record.getIssueDate(), record.getReturnDate()).getDays();
+				if (days < 3) {
+					fine = 0;
+				} else {
+					fine = (days - 3) * (record.getBook().getPrice() * 0.3);
+				}
+				record.setFine(fine);
+				bookRecordDao.saveRecord(record);
+				map.put("pos", "Returned Success");
+				return "StudentHome";
 			}
 		}
 	}

@@ -80,4 +80,9 @@ public class StudentController {
 	public String viewHistory(HttpSession session, ModelMap map) {
 		return studentService.viewBorrowHistory(session, map);
 	}
+
+	@GetMapping("/return")
+	public String returnBook(HttpSession session, ModelMap map) {
+		return studentService.returnBook(session, map);
+	}
 }

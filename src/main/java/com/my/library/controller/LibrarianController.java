@@ -105,4 +105,9 @@ public class LibrarianController {
 	public String viewHistory(HttpSession session, ModelMap map) {
 		return librarianService.viewBorrowHistory(session, map);
 	}
+	
+	@PostMapping("/history")
+	public String viewHistory(HttpSession session, ModelMap map,@RequestParam int id) {
+		return librarianService.viewBorrowHistory(session, map,id);
+	}
 }
