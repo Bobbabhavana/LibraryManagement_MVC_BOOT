@@ -32,7 +32,7 @@ public class LibrarianService {
 	BookDao bookDao;
 
 	public String librarianAccess(LoginHelper helper, ModelMap model) {
-		if (helper.getEmail().equals("jesm33@jsp.com") && helper.getPassword().equals("admin")) {
+		if (helper.getEmail().equals("admin") && helper.getPassword().equals("admin")) {
 			model.put("pos", "Authorization Success");
 			return "LibrarianMain";
 		} else {
@@ -125,6 +125,7 @@ public class LibrarianService {
 				model.put("pos", "Book Added Successfully");
 				return "LibrarianHome";
 			} else {
+				book2.setStatus(true);
 				book2.setQuantity(book2.getQuantity() + book.getQuantity());
 				bookDao.save(book2);
 				model.put("pos", "Book Added Successfully");
@@ -211,7 +212,7 @@ public class LibrarianService {
 		} else {
 			Book book2 = bookDao.findById(book.getId());
 			book.setPicture(book2.getPicture());
-
+			book.setStatus(book2.isStatus());
 			bookDao.save(book);
 			model.put("pos", "Book Updated Successfully");
 			return "LibrarianHome";

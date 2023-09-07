@@ -277,7 +277,7 @@ public class StudentService {
 			} else {
 				BookRecord record = records.get(0);
 				record.setReturnDate(LocalDate.now());
-				//Fine Calculation
+				// Fine Calculation
 				double fine = 0;
 				int days = Period.between(record.getIssueDate(), record.getReturnDate()).getDays();
 				if (days < 3) {
@@ -288,6 +288,30 @@ public class StudentService {
 				record.setFine(fine);
 				bookRecordDao.saveRecord(record);
 				map.put("pos", "Returned Success");
+				return "StudentHome";
+			}
+		}
+	}
+
+	public String payFine(HttpSession session, ModelMap map) {
+		if (session.getAttribute("student") == null) {
+			map.put("neg", "Invalid Session");
+			return "Home";
+		} else {
+			Student student = (Student) session.getAttribute("student");
+			List<BookRecord> bookRecords = student.getRecords();
+			double fine = 0;
+			if (bookRecords != null && !bookRecords.isEmpty()) {
+				for (BookRecord bookRecord : bookRecords) {
+					fine = bookRecord.getFine();
+				}
+			}
+			if (fine <= 0) {
+				map.put("neg", "No Pending Fine");
+				return "StudentHome";
+			} else {
+				// Payment Logic
+				map.put("pos", "You have to Pay " + fine + " Rs. Fine ");
 				return "StudentHome";
 			}
 		}

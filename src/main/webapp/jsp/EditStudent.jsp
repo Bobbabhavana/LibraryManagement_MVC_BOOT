@@ -53,7 +53,7 @@
 				</tr>
 
 			</table>
-			<br> <a href="/"><button type="button">Back</button></a>
+			<br> <a href="/jsp/StudentHome.jsp"><button type="button">Back</button></a>
 		</fieldset>
 	</form>
 </body>

@@ -11,5 +11,7 @@
 Enter Id:<input type="text" name="id" required="required">
 <button>View</button>
 </form>
+<br>
+<a href="/jsp/LibrarianHome.jsp"><button>Back</button></a>
 </body>
 </html>

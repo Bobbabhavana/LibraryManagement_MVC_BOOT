@@ -85,4 +85,9 @@ public class StudentController {
 	public String returnBook(HttpSession session, ModelMap map) {
 		return studentService.returnBook(session, map);
 	}
+
+	@GetMapping("/payfine")
+	public String payFine(HttpSession session, ModelMap map) {
+		return studentService.payFine(session, map);
+	}
 }
