@@ -241,7 +241,7 @@ public class StudentService {
 
 					bookRecords2.add(record);
 					student.setRecords(bookRecords2);
-
+					
 					studentDao.save(student);
 
 					map.put("pos", "Book Borrowing Success");
@@ -285,6 +285,8 @@ public class StudentService {
 				return "StudentHome";
 			} else {
 				BookRecord record = records.get(0);
+				record.getBook().setQuantity(record.getBook().getQuantity() + 1);
+				bookDao.save(record.getBook());
 				record.setReturnDate(LocalDate.now());
 				// Fine Calculation
 				double fine = 0;
@@ -325,7 +327,7 @@ public class StudentService {
 				object.put("amount", (int) (fine * 100));
 				object.put("currency", "INR");
 
-				RazorpayClient client = new RazorpayClient("key", "secret");
+				RazorpayClient client = new RazorpayClient("rzp_test_xdoqexESDimK5Wxy", "BRBHwtGL8CJl7QNI0a9ztMgStu");
 				Order order = client.orders.create(object);
 
 				PayMentDetails details = new PayMentDetails();
@@ -334,7 +336,7 @@ public class StudentService {
 				details.setPaymentId(null);
 				details.setOrderId(order.get("id").toString());
 				details.setStatus(order.get("status"));
-				details.setKeyDetails("key");
+				details.setKeyDetails("rzp_test_xdoqexESDimK5W");
 
 				paymentRepository.save(details);
 
@@ -357,6 +359,7 @@ public class StudentService {
 			PayMentDetails payMentDetails = details.stream().filter(x -> x.getPaymentId() == null).findFirst()
 					.orElse(null);
 			payMentDetails.setPaymentId(razorpay_payment_id);
+			payMentDetails.setStatus("success");
 			paymentRepository.save(payMentDetails);
 
 			BookRecord bookRecord = null;
