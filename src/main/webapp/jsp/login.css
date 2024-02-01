@@ -1,0 +1,13 @@
+*{
+    margin:0;
+    padding:0;
+ }
+     body{
+     background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMCaat7261HLJ-HtP7v6SPdmwkm8YDJ0yedg&usqp=CAU);
+     background-size: cover;
+     width: 100%;
+     height: 100vh;
+     background-position: center;
+     background-repeat: no-repeat;
+     overflow-x: hidden;   
+ }

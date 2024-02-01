@@ -327,7 +327,7 @@ public class StudentService {
 				object.put("amount", (int) (fine * 100));
 				object.put("currency", "INR");
 
-				RazorpayClient client = new RazorpayClient("rzp_test_xdoqexESDimK5Wxy", "BRBHwtGL8CJl7QNI0a9ztMgStu");
+				RazorpayClient client = new RazorpayClient("rzp_test_PTbq8jL4plm5Dr", "PPgh7eBZ0dspCKmHbWAvSYUG");
 				Order order = client.orders.create(object);
 
 				PayMentDetails details = new PayMentDetails();
@@ -336,7 +336,7 @@ public class StudentService {
 				details.setPaymentId(null);
 				details.setOrderId(order.get("id").toString());
 				details.setStatus(order.get("status"));
-				details.setKeyDetails("rzp_test_xdoqexESDimK5W");
+				details.setKeyDetails("rzp_test_PTbq8jL4plm5Dr");
 
 				paymentRepository.save(details);
 

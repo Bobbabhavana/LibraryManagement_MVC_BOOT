@@ -8,6 +8,22 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Librarian View Book</title>
+<style>
+
+*{
+   margin:0;
+   padding:0;
+}
+    body{
+    background-image: url(https://images.unsplash.com/photo-1549675584-91f19337af3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGxpYnJhcnl8ZW58MHx8MHx8fDA%3D&w=1000&q=80);
+    background-size: cover;
+    width: 100%;
+    height:120vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-x: hidden;   
+}
+</style>
 </head>
 <body>
 	<h1 style="color: red">${neg}</h1>

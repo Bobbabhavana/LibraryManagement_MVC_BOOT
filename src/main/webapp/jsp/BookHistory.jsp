@@ -3,10 +3,26 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Book History</title>
+<style>
+    *{
+   margin:0;
+   padding:0;
+}
+    body{
+    background-image: url(https://libero.com.au/wp-content/uploads/2016/10/parralax-about.jpg);
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-x: hidden;   
+}
+</style>
 </head>
 <body>
 	<%
